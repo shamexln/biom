@@ -45,7 +45,7 @@ float getcuff(std::map<int,int> minorder) {
 int main() {
     std::vector<std::pair<int, int>> sum;
     std::vector<std::pair<int, int>> vct;
-    vct.emplace_back(12,19);
+   // vct.emplace_back(12,19);
     vct.emplace_back(17,29);
     vct.emplace_back(23,33);
     vct.emplace_back(23,43);
@@ -59,18 +59,17 @@ int main() {
     for (int i = 0; i < vct.size(); i++) {
         auto [min, max] = vct[i];
         for (int j = i +1; j < vct.size(); j++) {
-            auto result = vct[j].second - vct[i].first;
-            auto diff = (result + max - min) / (max > vct[j].second
-                                                    ? max
-                                                    : vct[j].second - min < vct[j].first
-                                                          ? min
-                                                          : vct[j].first);
+            auto result = vct[j].second - vct[j].first;
+            float f = (float)(result + max - min);
+            float g  = max >= vct[j].second ? max : vct[j].second;
+            float gg = min <= vct[j].first ? min : vct[j].first;
+            float ff = (max >= vct[j].second ? max : vct[j].second) -  (min <= vct[j].first ? min : vct[j].first);
+            float diff = (float)(result + max - min) / (float)((max >= vct[j].second ? max : vct[j].second) -  (min <= vct[j].first ? min : vct[j].first));
             if (diff <= 1.35) {
                 std::cout <<  "group begin 2 element" <<  std::endl;
                 std::cout << vct[i].first << " " << vct[i].second << std::endl;
                 std::cout << vct[j].first << " " << vct[j].second << std::endl;
                 std::cout <<  "group end 2 element" <<  std::endl;
-
             }
         }
     }
@@ -89,6 +88,10 @@ int main() {
             auto [min2, max2] = vct[j];
             tmp.emplace_back(min2, max2);
             for (int k = j +1; k < vct.size(); k++) {
+                auto fnd = std::find_if(tmp.begin(), tmp.end(), [=](const auto& pair){ return pair.first == min2 && pair.second == max2; });
+                if (fnd != tmp.end()) {
+                    tmp.erase(++fnd, tmp.end());
+                }
                 auto result = vct[k].second - vct[k].first;
                 tmp.emplace_back(vct[k].first, vct[k].second);
 
@@ -96,7 +99,7 @@ int main() {
                 int nmin = getmin(tmp);
                 float cuff = getcuff(tmp);
 
-                float diff = cuff /(nmax - nmin);
+                float diff = (float)cuff /(float)(nmax - nmin);
 
                 if (diff <= 1.35) {
                     std::cout <<  "max value in group " <<  std::endl;
@@ -156,7 +159,7 @@ int main() {
 
                     float cuff = getcuff(tmp);
 
-                    float diff = cuff /(nmax-nmin);
+                    float diff = (float)cuff /(float)(nmax - nmin);
 
                     if (diff <= 1.35) {
                         std::cout <<  "max value in group " <<  std::endl;
